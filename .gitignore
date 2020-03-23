@@ -296,6 +296,7 @@ db-data/
 
 # ACEmulator specific files
 Source/ACE.Server/config.js
+Source/ACE.WorldBuilder/config.js
 Database/tools/password.txt
 Source/ACE.Server/log4net.config
 docker.env
