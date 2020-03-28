@@ -569,7 +569,7 @@ namespace ACE.Server.Managers
                 ("vitae_penalty", new Property<double>(0.05, "the amount of vitae penalty a player gets per death")),
                 ("vitae_penalty_max", new Property<double>(0.40, "the maximum vitae penalty a player can have")),
                 ("xp_modifier", new Property<double>(1.0, "scales the amount of xp received by players")),
-                ("buff_duration_multiplier", new Property<double>(1.0, "scales the duration of buffs - augmentation will multiply on top of this value"))
+                ("spell_duration_multiplier", new Property<double>(1.0, "scales the duration of spells - augmentation will multiply on top of this value"))
                 );
 
         public static readonly ReadOnlyDictionary<string, Property<string>> DefaultStringProperties =

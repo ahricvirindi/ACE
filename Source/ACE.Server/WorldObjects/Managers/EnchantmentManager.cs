@@ -208,7 +208,7 @@ namespace ACE.Server.WorldObjects.Managers
 
                 if (caster is Player player && spell.DotDuration == 0)
                 {
-                    var durationModifier = PropertyManager.GetDouble("buff_duration_multiplier").Item;
+                    var durationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
                     if (durationModifier > 0) { duration *= 1.0f + durationModifier; }
                     if (player.AugmentationIncreasedSpellDuration > 0) { duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f; }
                 }
@@ -253,7 +253,7 @@ namespace ACE.Server.WorldObjects.Managers
 
                 if (caster is Player player && spell.DotDuration == 0)
                 {
-                    var durationModifier = PropertyManager.GetDouble("buff_duration_multiplier").Item;
+                    var durationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
                     if (durationModifier > 0) { entry.Duration *= 1.0f + durationModifier; }
                     if (player.AugmentationIncreasedSpellDuration > 0) { entry.Duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f; }
                 }
