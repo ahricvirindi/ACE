@@ -206,12 +206,11 @@ namespace ACE.Server.WorldObjects.Managers
             {
                 var duration = spell.Duration;
 
-                if (caster is Player player && spell.DotDuration == 0)
-                {
-                    var durationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
-                    if (durationModifier > 0) { duration *= 1.0f + durationModifier; }
-                    if (player.AugmentationIncreasedSpellDuration > 0) { duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f; }
-                }
+                // apply Spell duration multiplier
+                var durationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
+                if (durationModifier > 0) { duration *= 0.0f + durationModifier; }
+
+                if (caster is Player player && spell.DotDuration == 0 && player.AugmentationIncreasedSpellDuration > 0) { duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f; }
 
                 var timeRemaining = refreshSpell.Duration + refreshSpell.StartTime;
 
@@ -251,12 +250,11 @@ namespace ACE.Server.WorldObjects.Managers
             {
                 entry.Duration = spell.Duration;
 
-                if (caster is Player player && spell.DotDuration == 0)
-                {
-                    var durationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
-                    if (durationModifier > 0) { entry.Duration *= 1.0f + durationModifier; }
-                    if (player.AugmentationIncreasedSpellDuration > 0) { entry.Duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f; }
-                }
+                // apply Spell duration multiplier
+                var durationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
+                if (durationModifier > 0) { entry.Duration *= 0.0f + durationModifier; }
+
+                if (caster is Player player && spell.DotDuration == 0 && player.AugmentationIncreasedSpellDuration > 0) { entry.Duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f; }
             }
             else
             {
