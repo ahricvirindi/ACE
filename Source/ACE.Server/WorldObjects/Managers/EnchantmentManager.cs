@@ -179,7 +179,12 @@ namespace ACE.Server.WorldObjects.Managers
             else
             {
                 var duration = spell.Duration;
-                if (caster is Player player && player.AugmentationIncreasedSpellDuration > 0 && spell.DotDuration == 0)
+
+                // apply global spell duration multiplier -- will apply to buffs and debuffs -- augs will extend even further
+                var spellDurationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
+                if (spellDurationModifier > 0) { duration *= 0.0f + spellDurationModifier; }
+
+                if (caster is Player player && spell.DotDuration == 0 && player.AugmentationIncreasedSpellDuration > 0)
                     duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f;
 
                 var timeRemaining = refreshSpell.Duration + refreshSpell.StartTime;
@@ -218,7 +223,11 @@ namespace ACE.Server.WorldObjects.Managers
             {
                 entry.Duration = spell.Duration;
 
-                if (caster is Player player && player.AugmentationIncreasedSpellDuration > 0 && spell.DotDuration == 0)
+                // apply global spell duration multiplier -- will apply to buffs and debuffs -- augs will extend even further
+                var spellDurationModifier = PropertyManager.GetDouble("spell_duration_multiplier").Item;
+                if (spellDurationModifier > 0) { entry.Duration *= 0.0f + spellDurationModifier; }
+
+                if (caster is Player player && spell.DotDuration == 0 && player.AugmentationIncreasedSpellDuration > 0)
                     entry.Duration *= 1.0f + player.AugmentationIncreasedSpellDuration * 0.2f;
             }
             else
