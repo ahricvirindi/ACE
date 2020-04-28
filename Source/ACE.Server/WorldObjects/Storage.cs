@@ -55,6 +55,10 @@ namespace ACE.Server.WorldObjects
             if (player.IgnoreHouseBarriers)
                 return new ActivationResult(true);
 
+            // TODO: remove the magic number
+            if (House == null)
+                return new ActivationResult(this.WeenieClassId == 500002);
+
             if (!House.RootHouse.HasPermission(player, true))
             {
                 player.Session.Network.EnqueueSend(new GameEventCommunicationTransientString(player.Session, $"You do not have permission to access {Name}"));

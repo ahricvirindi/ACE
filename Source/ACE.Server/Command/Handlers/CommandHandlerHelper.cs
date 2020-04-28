@@ -5,6 +5,10 @@ using ACE.Entity;
 using ACE.Entity.Enum;
 using ACE.Server.Network;
 using ACE.Server.WorldObjects;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Linq;
+using MySqlX.XDevAPI.Relational;
 
 namespace ACE.Server.Command.Handlers
 {
@@ -63,6 +67,79 @@ namespace ACE.Server.Command.Handlers
                 return null;
             }
             return target;
+        }
+
+        /// <summary>
+        /// This will split a string by \n for rows and | for columns and then pretty print as a text table
+        /// </summary>
+        public static void PrettyPrint(Session session, string message, bool hasHeader = true, ChatMessageType chatMessageType = ChatMessageType.Broadcast)
+        {
+            var parsed = new List<List<string>>();
+
+            message = message.Trim().TrimEnd('\n');
+
+            var rows = message.Split('\n');
+            foreach(var r in rows)
+            {
+                var newRow = new List<string>();
+                newRow.AddRange(r.Split('|'));
+                parsed.Add(newRow);
+            }
+
+            PrettyPrint(session, parsed, hasHeader, chatMessageType);
+        }
+
+        /// <summary>
+        /// This will attempt to format a list of a list of strings into a text table.
+        /// TODO: Refactor for less ugliness
+        /// </summary>
+        public static void PrettyPrint(Session session, List<List<string>> table, bool hasHeader = true, ChatMessageType chatMessageType = ChatMessageType.Broadcast)
+        {
+            if (table == null || table.Count == 0 || table[0] == null || table[0].Count == 0)
+            {
+                WriteOutputInfo(session, "", chatMessageType);
+                return;
+            }
+
+            if (table[0].Count == 1)
+            {
+                WriteOutputInfo(session, table[0][0], chatMessageType);
+                return;
+            }
+
+            var pretty = "Generating who list...\n\n";
+            var colCount = table.Max(x => x.Count);
+            var colWidths = Enumerable.Range(0, colCount)
+                .Select(i => table.Max(arr => (arr.ElementAtOrDefault(i) ?? "").Length))
+                .ToList();
+
+            var sep = "+".PadRight(colWidths.Sum(x => x) + colCount, '-') + "+\n";
+
+            pretty += sep;
+
+            table.ForEach(row =>
+            {
+                var line = "|";
+                for (var x = 0; x < colCount; x++)
+                {
+                    var cell = "";
+                    if (x < row.Count)
+                    {
+                        cell = row[x];
+                    }
+                    line += $"{cell}".PadRight(colWidths[x], ' ') + "|";
+                }
+                pretty += line + "\n";
+
+                if (hasHeader && table.Count > 1 && pretty.Count(x => x == '\n') == 2)
+                {
+                    pretty += sep + "\n";
+                }
+            });
+
+            pretty += sep + "\n\n\n";
+
+            WriteOutputInfo(session, pretty, chatMessageType);
         }
     }
 }

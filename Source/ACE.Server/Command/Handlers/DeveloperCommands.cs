@@ -392,13 +392,13 @@ namespace ACE.Server.Command.Handlers
         /// <summary>
         /// Debug command to print out all of the active players connected too the server.
         /// </summary>
-        [CommandHandler("listplayers", AccessLevel.Developer, CommandHandlerFlag.None, 0, "Displays all of the active players connected too the server.")]
+        [CommandHandler("who", AccessLevel.Player, CommandHandlerFlag.None, 0, "Displays all of the active players connected too the server.")]
+        [CommandHandler("listplayers", AccessLevel.Player, CommandHandlerFlag.None, 0, "Displays all of the active players connected too the server.")]
         public static void HandleListPlayers(Session session, params string[] parameters)
         {
-            string message = "";
             uint playerCounter = 0;
-
             AccessLevel? targetAccessLevel = null;
+
             if (parameters?.Length > 0)
             {
                 if (Enum.TryParse(parameters[0], true, out AccessLevel parsedAccessLevel))
@@ -421,19 +421,55 @@ namespace ACE.Server.Command.Handlers
             }
 
             if (targetAccessLevel.HasValue)
-                message += $"Listing only {targetAccessLevel.Value.ToString()}s:\n";
+                CommandHandlerHelper.WriteOutputInfo(session, $"Listing only {targetAccessLevel.Value.ToString()}s:\n");
 
-            foreach (var player in PlayerManager.GetAllOnline())
+            var players = new List<List<string>>();
+            var ips = new List<string>();
+
+            players.Add(new List<string>() {
+                "Name", "Level", "Allegiance"
+            });
+
+            if (session == null || session.Player.Account.AccessLevel != (uint)AccessLevel.Player)
             {
+                players[0].AddRange(new List<string>() { "Player ID", "Account Name", "Account ID", "IP" });
+            }
+
+            // TODO : add in hiding cloaked admins
+            // TODO : add in voluntary invis from who command
+            foreach (var player in PlayerManager.GetAllOnline().OrderByDescending(x => x.Account.AccessLevel).ThenByDescending(x => x.Level).ThenBy(x => x.Name))
+            {
+                var allegianceName = "None";
+                if (player.Allegiance != null)
+                {
+                    allegianceName = "Unnamed";
+                    if (player.Allegiance.AllegianceName != null)
+                    {
+                        allegianceName = player.Allegiance.AllegianceName;
+                    }
+                }
+
+                var playerInfo = new List<string>() { 
+                   player.Name, player.Level.ToString(), allegianceName
+                };
+
+                var ip = $"{player.Account.LastLoginIP[0]}.{player.Account.LastLoginIP[1]}.{player.Account.LastLoginIP[2]}.{player.Account.LastLoginIP[3]}";
+                ips.Add(ip);
+                if (session == null || session.Player.Account.AccessLevel != (uint)AccessLevel.Player)
+                {
+                    playerInfo.AddRange(new List<string>() { player.Character.Id.ToString(), player.Account.AccountName.ToString(), player.Account.AccountId.ToString(), ip });
+                }
+
                 if (targetAccessLevel.HasValue && player.Account.AccessLevel != ((uint)targetAccessLevel.Value))
                     continue;
-                message += $"{player.Name} : {player.Session.AccountId}\n";
+
+                players.Add(playerInfo);
                 playerCounter++;
             }
 
-            message += $"Total connected Players: {playerCounter}\n";
+            CommandHandlerHelper.PrettyPrint(session, players, true, ChatMessageType.Broadcast);
 
-            CommandHandlerHelper.WriteOutputInfo(session, message, ChatMessageType.Broadcast);
+            CommandHandlerHelper.WriteOutputInfo(session, $"Total characters in world: {playerCounter}\nTotal server connections: { ips.Distinct().Count()}\n");
         }
 
         /// <summary>
