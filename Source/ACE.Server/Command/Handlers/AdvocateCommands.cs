@@ -33,6 +33,7 @@ namespace ACE.Server.Command.Handlers
                 case "off":
                     session.Player.UpdateProperty(session.Player, PropertyBool.Attackable, false, true);
                     session.Network.EnqueueSend(new GameMessageSystemChat("Monsters will only attack you if provoked by you first.", ChatMessageType.Broadcast));
+                    PlayerManager.BroadcastToAuditChannel(session.Player, $"{session.Player.Name} has made themselves unattackable.");
                     break;
                 case "on":
                 default:

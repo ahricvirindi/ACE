@@ -64,6 +64,7 @@ namespace ACE.Server.Command.Handlers
                     session.Player.SetProperty(PropertyInt.CloakStatus, (int)CloakStatus.On);
 
                     CommandHandlerHelper.WriteOutputInfo(session, $"You are now cloaked.\nYou are now ethereal and can pass through doors.", ChatMessageType.Broadcast);
+                    PlayerManager.BroadcastToAuditChannel(session.Player, $"{session.Player.Name} has cloaked themselves.");
                     break;
                 case "player":
                     if (session.AccessLevel > AccessLevel.Envoy)
@@ -75,6 +76,7 @@ namespace ACE.Server.Command.Handlers
 
                         session.Player.DeCloak();
                         CommandHandlerHelper.WriteOutputInfo(session, $"You will now appear as a player.", ChatMessageType.Broadcast);
+                        PlayerManager.BroadcastToAuditChannel(session.Player, $"{session.Player.Name} has cloaked themselves as a player.");
                     }
                     else
                         CommandHandlerHelper.WriteOutputInfo(session, $"You do not have permission to do that state", ChatMessageType.Broadcast);
@@ -90,6 +92,7 @@ namespace ACE.Server.Command.Handlers
 
                         session.Player.DeCloak();
                         CommandHandlerHelper.WriteOutputInfo(session, $"You will now appear as a creature.\nUse @pk free to be allowed to attack all living things.", ChatMessageType.Broadcast);
+                        PlayerManager.BroadcastToAuditChannel(session.Player, $"{session.Player.Name} has cloaked themselves as a creature.");
                     }
                     else
                         CommandHandlerHelper.WriteOutputInfo(session, $"You do not have permission to do that state", ChatMessageType.Broadcast);
@@ -178,6 +181,8 @@ namespace ACE.Server.Command.Handlers
 
             session.Player.CreateSentinelBuffPlayers(fellowshipMembers.Values,
                 fellowshipMembers.Count == 1 && aceParams[0].AsPlayer.Fellowship.FellowshipLeaderGuid == session.Player.Guid.Full);
+
+            PlayerManager.BroadcastToAuditChannel(session.Player, $"{session.Player.Name} has bufffed the fellowship of {aceParams[0].AsPlayer.Name}.");
         }
 
         // buff [name]
@@ -203,6 +208,8 @@ namespace ACE.Server.Command.Handlers
             };
             if (!CommandParameterHelpers.ResolveACEParameters(session, parameters, aceParams)) return;
             session.Player.CreateSentinelBuffPlayers(new Player[] { aceParams[0].AsPlayer }, aceParams[0].AsPlayer == session.Player, aceParams[1].AsULong);
+
+            PlayerManager.BroadcastToAuditChannel(session.Player, $"{session.Player.Name} has bufffed {aceParams[0].AsPlayer.Name}.");
         }
 
         // run < on | off | toggle | check >

@@ -390,10 +390,32 @@ namespace ACE.Server.Command.Handlers
         // ==================================
 
         /// <summary>
-        /// Debug command to print out all of the active players connected too the server.
+        /// Command to print out population info of the server.
         /// </summary>
-        [CommandHandler("who", AccessLevel.Player, CommandHandlerFlag.None, 0, "Displays all of the active players connected too the server.")]
-        [CommandHandler("listplayers", AccessLevel.Player, CommandHandlerFlag.None, 0, "Displays all of the active players connected too the server.")]
+        [CommandHandler("popinfo", AccessLevel.Developer, CommandHandlerFlag.None, 0, "Displays server population info of the server.")]
+        public static void HandlePopulationInfo(Session session, params string[] parameters)
+        {
+            var all = PlayerManager.GetAllPlayers();
+            var online = PlayerManager.GetAllOnline();
+
+            var pCount = all.Count;
+            var poCount = online.Count;
+            var aCount = all.Select(x => x.Account.AccountId).Distinct().Count();
+            var aoCount = online.Select(x => x.Account.AccountId).Distinct().Count();
+            var ipCount = all.Select(x => x.Account.LastLoginIP).Distinct().Count();
+            var ipoCount = online.Select(x => x.Account.LastLoginIP).Distinct().Count();
+
+            CommandHandlerHelper.WriteOutputInfo(session, $"\n\nCharacters: {poCount} online out of {pCount} total.\n");
+            CommandHandlerHelper.WriteOutputInfo(session, $"Accounts: {aoCount} online out of {aCount} total.\n");
+            CommandHandlerHelper.WriteOutputInfo(session, $"Unique IPs: {ipoCount} online out of {ipCount} total.\n\n\n");
+        }
+
+        /// <summary>
+        /// Command to print out all of the active players connected too the server.  This has been made public but not moved to
+        /// playercomamands.
+        /// </summary>
+        [CommandHandler("who", AccessLevel.Player, CommandHandlerFlag.None, 0, "Displays all of the active players connected to the server.")]
+        [CommandHandler("listplayers", AccessLevel.Player, CommandHandlerFlag.None, 0, "Displays all of the active players connected to the server.")]
         public static void HandleListPlayers(Session session, params string[] parameters)
         {
             uint playerCounter = 0;
