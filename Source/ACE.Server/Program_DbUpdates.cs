@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Collections.Generic;
 
 using ACE.Common;
 
@@ -161,19 +162,19 @@ namespace ACE.Server
 
         private static void AutoApplyWorldCustomizations()
         {
+            var content_folders_search_option = ConfigManager.Config.Offline.RecurseWorldCustomizationPaths ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var content_folders = new List<string> { GetContentFolder() };
             content_folders.AddRange(ConfigManager.Config.Offline.WorldCustomizationAddedPaths);
             content_folders.Sort();
-            var content_folders_search_option = ConfigManager.Config.Offline.RecurseWorldCustomizationPaths ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 
             Console.WriteLine($"Searching for World Customization SQL scripts .... ");
 
             content_folders.ForEach(path =>
             {
                 var contentDI = new DirectoryInfo(path);
-
                 if (contentDI.Exists)
                 {
+                    Console.Write($"Searching for SQL files within {path} .... ");
                     foreach (var file in contentDI.GetFiles("*.sql", content_folders_search_option).OrderBy(f => f.FullName))
                     {
                         Console.Write($"Found {file.FullName} .... ");
@@ -196,7 +197,6 @@ namespace ACE.Server
                         }
                     }
                 }
-
             });
 
             Console.WriteLine($"World Customization SQL scripts import complete!");
