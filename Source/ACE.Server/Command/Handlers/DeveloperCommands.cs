@@ -405,9 +405,9 @@ namespace ACE.Server.Command.Handlers
             var ipCount = all.Select(x => x.Account.LastLoginIP).Distinct().Count();
             var ipoCount = online.Select(x => x.Account.LastLoginIP).Distinct().Count();
 
-            CommandHandlerHelper.WriteOutputInfo(session, $"\n\nCharacters: {poCount} online out of {pCount} total.\n");
-            CommandHandlerHelper.WriteOutputInfo(session, $"Accounts: {aoCount} online out of {aCount} total.\n");
-            CommandHandlerHelper.WriteOutputInfo(session, $"Unique IPs: {ipoCount} online out of {ipCount} total.\n\n\n");
+            CommandHandlerHelper.WriteOutputInfo(session, $"Characters: {poCount} online out of {pCount} total.");
+            CommandHandlerHelper.WriteOutputInfo(session, $"Accounts: {aoCount} online out of {aCount} total.");
+            CommandHandlerHelper.WriteOutputInfo(session, $"Unique IPs: {ipoCount} online out of {ipCount} total.");
         }
 
         /// <summary>

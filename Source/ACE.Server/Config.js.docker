@@ -193,6 +193,6 @@
 
         // When retrieving a file list of .sql files in the AutoApplyWorldCustomizations process
         // this will cause the file search to retrieve all files recursively from each directory
-        "RecurseWorldCustomizationPaths": true
+        "RecurseWorldCustomizationPaths": false
     }
 }
