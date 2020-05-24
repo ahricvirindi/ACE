@@ -1,7 +1,6 @@
 extern alias MySqlConnectorAlias;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -175,6 +174,7 @@ namespace ACE.Server
                 if (contentDI.Exists)
                 {
                     Console.Write($"Searching for SQL files within {path} .... ");
+
                     foreach (var file in contentDI.GetFiles("*.sql", content_folders_search_option).OrderBy(f => f.FullName))
                     {
                         Console.Write($"Found {file.FullName} .... ");
