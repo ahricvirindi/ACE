@@ -2619,6 +2619,9 @@ namespace ACE.Server.Command.Handlers
 
                 var wo = session.Player.CurrentLandblock?.GetObject(objectId);
 
+                if (wo == null)
+                    return;
+
                 if (objectId.IsPlayer())
                     return;
 
