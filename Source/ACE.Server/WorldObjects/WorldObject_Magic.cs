@@ -414,7 +414,7 @@ namespace ACE.Server.WorldObjects
                     {
                         var percent = (float)-tryBoost / spellTarget.Health.MaxValue;
 
-                        if (equippedCloak != null && Cloak.HasDamageProc(equippedCloak) && Cloak.RollProc(percent))
+                        if (equippedCloak != null && Cloak.HasDamageProc(equippedCloak) && Cloak.RollProc(equippedCloak, percent))
                         {
                             var reduced = -Cloak.GetReducedAmount(-tryBoost);
 
@@ -561,7 +561,7 @@ namespace ACE.Server.WorldObjects
                     {
                         var percent = (float)srcVitalChange / spellTarget.Health.MaxValue;
 
-                        if (equippedCloak != null && Cloak.HasDamageProc(equippedCloak) && Cloak.RollProc(percent))
+                        if (equippedCloak != null && Cloak.HasDamageProc(equippedCloak) && Cloak.RollProc(equippedCloak, percent))
                         {
                             var reduced = Cloak.GetReducedAmount(srcVitalChange);
 
@@ -680,6 +680,12 @@ namespace ACE.Server.WorldObjects
                         //    emoteChain.AddAction(target, () => target.EmoteManager.OnReceiveCritical(creature));
                         emoteChain.EnqueueChain();
                     }
+                    break;
+
+                case SpellType.Projectile:
+
+                    damage = 0;
+                    var projectiles = CreateSpellProjectiles(spell, target, itemCaster);
                     break;
 
                 case SpellType.LifeProjectile:
